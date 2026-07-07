@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "knjba"
+version = "0.1.0"
+description = "Joint Bayesian analysis of kilonova models (JAX/GPU-native)"
+requires-python = ">=3.10,<3.13"
+readme = "README.md"
+
+dependencies = [
+    # --- core numerics ---
+    "numpy>=1.26",
+    "scipy>=1.12",
+    "pandas>=2.2",
+
+    # --- JAX ecosystem (CPU by default; see [project.optional-dependencies] for GPU) ---
+    "jax>=0.4.30",
+    "jaxlib>=0.4.30",
+    "flax>=0.8",              # for the MLP emulators
+    "optax>=0.2",             # emulator training (gradient-based optimizers)
+
+    # --- samplers ---
+    "blackjax>=1.2",          # primary: GPU-native nested slice sampling (blackjax-ns)
+    "dynesty>=2.1",           # CPU cross-check / validation baseline
+
+    # --- astronomy / units / constants ---
+    "astropy>=6.0",
+
+    # --- config, IO ---
+    "pyyaml>=6.0",
+    "h5py>=3.10",
+
+    # --- plotting / diagnostics ---
+    "matplotlib>=3.8",
+    "corner>=2.2",
+
+    # --- testing ---
+    "pytest>=8.0",
+]
+
+[project.optional-dependencies]
+# Install with: pip install -e ".[gpu]"
+# Requires a CUDA 12.x driver already present on the host; do NOT install
+# both this and the CPU-only jaxlib pin above in the same environment.
+gpu = [
+    "jax[cuda12]>=0.4.30",
+]
+
+dev = [
+    "ipython",
+    "jupyter",
+    "black",
+    "ruff",
+]
+
+[tool.setuptools.packages.find]
+include = ["knjba*"]
